@@ -88,8 +88,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🎙️ PTE Pro MP3 Generator")
-st.caption("英语: Google Engine | 法语: Microsoft Azure")
+st.title("🎙️ PTE & TCF MP3 Generator")
+st.caption("Test in COUV Edu.")
 
 # --- 3. 输入区域 ---
 text_input = st.text_area("请输入练习文本：", placeholder="在此输入内容...", height=300)

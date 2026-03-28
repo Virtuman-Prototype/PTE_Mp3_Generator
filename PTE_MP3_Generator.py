@@ -93,7 +93,7 @@ if bin_str:
         <img src="data:image/png;base64,{bin_str}" class="avatar">
         <div class="info-text">
             <p class="name">Serena Shuo YANG</p>
-            <p class="school">Shuoyang5@Carleton</p>
+            <p class="school">Rocco.yang@gmail.com</p>
         </div>
     </div>
     """

@@ -152,7 +152,7 @@ st.markdown(f"""
     /* --- 深色主題 (Dark Theme) 下的文本框 --- */
     @media (prefers-color-scheme: dark) {{
         .stTextArea textarea {{
-            color: transparent !important;
+            color: #444444 !important;
             background-color: transparent !important;
             border: 1px solid #444444 !important;
         }}

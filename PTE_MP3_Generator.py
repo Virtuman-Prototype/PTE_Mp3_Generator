@@ -17,11 +17,15 @@ def get_base64_of_bin_file(bin_file):
         except: return None
     return None
 
-def generate_google_audio(text, lang='en', rate=None): # 增加一个 rate 参数“接位”
+def generate_google_audio(text, lang='en', rate="+0%"):
+    """使用 gTTS 生成英语语音，并将滑块语速映射到 Google 的快/慢两档"""
     if not text.strip(): return None
     try:
-        # 注意：gTTS 无法处理 "+20%" 这种格式，所以这里我们忽略 rate
-        tts = gTTS(text=text, lang=lang) 
+        # gTTS 只支持 slow=True (极慢) 或 slow=False (正常)
+        # 我们设定：当滑块在“极慢”或“略慢”时，触发 Google 的慢速模式
+        is_slow = True if "-" in rate else False
+        
+        tts = gTTS(text=text, lang=lang, slow=is_slow) 
         fp = io.BytesIO()
         tts.write_to_fp(fp)
         return fp
@@ -122,13 +126,15 @@ col1, col2 = st.columns(2)
 with col1:
     if st.button("生成英文 (EN)", use_container_width=True):
         if text_input:
-            with st.spinner('Google 合成中...'):
-                audio_fp = asyncio.run(generate_google_audio(text_input, EN_VOICE, current_speed))
+            with st.spinner('Google 引擎合成中...'):
+                # 传入 text_input, 'en', 和当前的滑块速度
+                audio_fp = generate_google_audio(text_input, 'en', current_speed)
+                
                 if audio_fp:
                     audio_bytes = audio_fp.getvalue()
                     b64 = base64.b64encode(audio_bytes).decode()
-                    st.markdown(f'<audio controls style="width: 100%; margin-top:10px;"><source src="data:audio/mp3;base64,{b64}"></audio>', unsafe_allow_html=True)
-                    st.download_button("📥 下载 MP3", data=audio_bytes, file_name="PTE_EN_Google.mp3")
+                    st.markdown(f'<audio controls style="width: 100%; margin-top:10px;"><source src="data:audio/mp3;base64,{b64}" type="audio/mp3"></audio>', unsafe_allow_html=True)
+                    st.download_button("📥 下载 MP3", data=audio_bytes, file_name="PTE_EN_Google.mp3", mime="audio/mp3")
 
 with col2:
     if st.button("生成法语 (FR)", use_container_width=True):

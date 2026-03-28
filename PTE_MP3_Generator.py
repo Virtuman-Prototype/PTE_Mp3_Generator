@@ -30,7 +30,7 @@ async def generate_microsoft_audio(text, voice, rate="+0%"):
         return None
 
 # --- 2. 页面配置与黑白灰深色主题 ---
-st.set_page_config(page_title="PTE Pro", page_icon="🎙️")
+st.set_page_config(page_title="PTE & TCF", page_icon="🎙️")
 
 st.markdown("""
     <style>
@@ -74,7 +74,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🎙️ PTE Pro MP3 Generator")
+st.title("🎙️ PTE & TCF MP3 Generator")
 st.caption("纯净模式 | 微软 AI 高保真语音")
 
 # --- 3. 输入区域 ---

@@ -153,7 +153,7 @@ st.markdown(f"""
     @media (prefers-color-scheme: dark) {{
         .stTextArea textarea {{
             color: transparent !important;
-            background-color: #000000 !important;
+            background-color: transparent !important;
             border: 1px solid #444444 !important;
         }}
     }}

@@ -28,9 +28,9 @@ def generate_audio(text, lang, slow):
         return None
 
 # --- 2. 页面配置 ---
-st.set_page_config(page_title="PTE MP3 Generator", page_icon="🎙️")
+st.set_page_config(page_title="PTE/TCF MP3 Generator", page_icon="🎙️")
 
-st.title("🎙️ PTE MP3 Generator")
+st.title("🎙️ PTE/TCF MP3 Generator")
 st.write("输入文本，一键生成英文或法文音频。")
 
 # --- 3. 侧边栏个人信息 ---

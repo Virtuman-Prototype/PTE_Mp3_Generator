@@ -17,11 +17,11 @@ def get_base64_of_bin_file(bin_file):
         except: return None
     return None
 
-def generate_google_audio(text, lang='en'):
-    """使用 gTTS 生成英语语音 (Google)"""
+def generate_google_audio(text, lang='en', rate=None): # 增加一个 rate 参数“接位”
     if not text.strip(): return None
     try:
-        tts = gTTS(text=text, lang=lang)
+        # 注意：gTTS 无法处理 "+20%" 这种格式，所以这里我们忽略 rate
+        tts = gTTS(text=text, lang=lang) 
         fp = io.BytesIO()
         tts.write_to_fp(fp)
         return fp

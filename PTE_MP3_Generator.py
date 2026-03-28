@@ -153,7 +153,7 @@ st.markdown(f"""
     @media (prefers-color-scheme: dark) {{
         .stTextArea textarea {{
             color: #FFFFFF !important;
-            background-color: #1E1E1E !important;
+            background-color: #000000 !important;
             border: 1px solid #444444 !important;
         }}
     }}
@@ -180,7 +180,7 @@ footer_html = f"""
         {f'<img src="data:image/png;base64,{avatar_b64}" class="card-avatar">' if avatar_b64 else "👤"}
         <div class="card-info">
             <p class="card-name">Serena Shuo YANG</p>
-            <p class="card-email">📧 Rocco.yang@gmail.com</p>
+            <p class="card-email"> EMAIL: Rocco.yang@gmail.com</p>
         </div>
     </div>
 """

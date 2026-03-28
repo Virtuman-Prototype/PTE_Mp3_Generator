@@ -14,12 +14,13 @@ def get_base64_of_bin_file(bin_file):
         except: return None
     return None
 
-# 改为异步生成函数，调用微软 Edge 引擎
-async def generate_microsoft_audio(text, voice):
+# 找到函数定义，添加 rate 参数
+async def generate_microsoft_audio(text, voice, rate): # <--- 这里加了 rate
     if not text.strip():
         return None
     try:
-        communicate = edge_tts.Communicate(text, voice)
+        # 在 Communicate 里面加上 rate 参数
+        communicate = edge_tts.Communicate(text, voice, rate=rate) 
         audio_data = b""
         async for chunk in communicate.stream():
             if chunk["type"] == "audio":
@@ -52,7 +53,7 @@ FR_VOICE = "fr-FR-VivienneNeural"
 with col1:
     if st.button("生成英文 EN", use_container_width=True):
         # 运行异步任务
-        audio_fp = asyncio.run(generate_microsoft_audio(text_input, EN_VOICE))
+        audio_fp = asyncio.run(generate_microsoft_audio(text_input, EN_VOICE, speed_str))
         if audio_fp:
             audio_bytes = audio_fp.getvalue()
             b64 = base64.b64encode(audio_bytes).decode()
@@ -61,7 +62,7 @@ with col1:
 
 with col2:
     if st.button("生成法语 FR", use_container_width=True):
-        audio_fp = asyncio.run(generate_microsoft_audio(text_input, FR_VOICE))
+        audio_fp = asyncio.run(generate_microsoft_audio(text_input, FR_VOICE, speed_str))
         if audio_fp:
             audio_bytes = audio_fp.getvalue()
             b64 = base64.b64encode(audio_bytes).decode()

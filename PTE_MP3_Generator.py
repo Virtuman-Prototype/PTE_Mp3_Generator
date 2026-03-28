@@ -115,8 +115,8 @@ st.markdown(
     /* 定义悬浮窗的容器 */
     .footer {{
         position: fixed;
-        bottom: 10px;
-        right: 10px;
+        bottom: 60px;
+        right: 15px;
         width: auto;
         background-color: rgba(255, 255, 255, 0.9); /* 半透明白色背景 */
         border: 1px solid #ddd;

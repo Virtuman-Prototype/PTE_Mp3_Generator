@@ -1,12 +1,15 @@
 import streamlit as st
 import asyncio
 import edge_tts
+from gtts import gTTS
 import io
 import base64
 import os
 
 # --- 1. 核心功能函数 ---
+
 def get_base64_of_bin_file(bin_file):
+    """读取头像文件"""
     if os.path.exists(bin_file):
         try:
             with open(bin_file, 'rb') as f:
@@ -14,11 +17,22 @@ def get_base64_of_bin_file(bin_file):
         except: return None
     return None
 
-async def generate_microsoft_audio(text, voice, rate="+0%"):
-    if not text.strip():
-        return None
+def generate_google_audio(text, lang='en'):
+    """使用 gTTS 生成英语语音 (Google)"""
+    if not text.strip(): return None
     try:
-        # 语速固定为标准 (+0%)
+        tts = gTTS(text=text, lang=lang)
+        fp = io.BytesIO()
+        tts.write_to_fp(fp)
+        return fp
+    except Exception as e:
+        st.error(f"Google 语音合成失败: {e}")
+        return None
+
+async def generate_microsoft_audio(text, voice, rate="+0%"):
+    """使用 Edge TTS 生成法语语音 (Microsoft)"""
+    if not text.strip(): return None
+    try:
         communicate = edge_tts.Communicate(text, voice, rate=rate)
         audio_data = b""
         async for chunk in communicate.stream():
@@ -26,15 +40,15 @@ async def generate_microsoft_audio(text, voice, rate="+0%"):
                 audio_data += chunk["data"]
         return io.BytesIO(audio_data)
     except Exception as e:
-        st.error(f"语音合成失败: {e}")
+        st.error(f"微软语音合成失败: {e}")
         return None
 
 # --- 2. 页面配置与黑白灰深色主题 ---
-st.set_page_config(page_title="PTE & TCF", page_icon="🎙️")
+st.set_page_config(page_title="PTE Pro", page_icon="🎙️")
 
 st.markdown("""
     <style>
-    /* 全局背景与字体颜色 */
+    /* 全局背景 */
     .main { background-color: #0E1117; }
     
     /* 输入框：22px 大字号，黑底白字 */
@@ -47,7 +61,7 @@ st.markdown("""
         border-radius: 12px !important;
     }
 
-    /* 标题标签字号 */
+    /* 标签文字字号与颜色 */
     [data-testid="stWidgetLabel"] p {
         font-size: 20px !important;
         color: #E0E0E0 !important;
@@ -69,43 +83,42 @@ st.markdown("""
         background-color: #111111 !important;
     }
 
-    /* 隐藏所有红色的可能性 */
+    /* 彻底去红 */
     :root { --primary-color: #C0C0C0 !important; }
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🎙️ PTE & TCF MP3 Generator")
-st.caption("Test in COUV Edu.")
+st.title("🎙️ PTE Pro MP3 Generator")
+st.caption("英语: Google Engine | 法语: Microsoft Azure")
 
 # --- 3. 输入区域 ---
 text_input = st.text_area("请输入练习文本：", placeholder="在此输入内容...", height=300)
 
-# --- 4. 生成区域 (直接使用标准语速) ---
+# --- 4. 生成区域 (英语用 Google, 法语用微软) ---
 col1, col2 = st.columns(2)
-EN_VOICE = "en-US-AvaNeural"
-FR_VOICE = "fr-FR-VivienneNeural"
 
 with col1:
     if st.button("生成英文 (EN)", use_container_width=True):
         if text_input:
-            with st.spinner('合成中...'):
-                audio_fp = asyncio.run(generate_microsoft_audio(text_input, EN_VOICE))
+            with st.spinner('Google 合成中...'):
+                audio_fp = generate_google_audio(text_input, lang='en')
                 if audio_fp:
                     audio_bytes = audio_fp.getvalue()
                     b64 = base64.b64encode(audio_bytes).decode()
                     st.markdown(f'<audio controls style="width: 100%; margin-top:10px;"><source src="data:audio/mp3;base64,{b64}"></audio>', unsafe_allow_html=True)
-                    st.download_button("📥 下载 MP3", data=audio_bytes, file_name="PTE_EN.mp3")
+                    st.download_button("📥 下载 MP3", data=audio_bytes, file_name="PTE_EN_Google.mp3")
 
 with col2:
     if st.button("生成法语 (FR)", use_container_width=True):
         if text_input:
-            with st.spinner('合成中...'):
+            with st.spinner('微软合成中...'):
+                FR_VOICE = "fr-FR-VivienneNeural"
                 audio_fp = asyncio.run(generate_microsoft_audio(text_input, FR_VOICE))
                 if audio_fp:
                     audio_bytes = audio_fp.getvalue()
                     b64 = base64.b64encode(audio_bytes).decode()
                     st.markdown(f'<audio controls style="width: 100%; margin-top:10px;"><source src="data:audio/mp3;base64,{b64}"></audio>', unsafe_allow_html=True)
-                    st.download_button("📥 下载 MP3", data=audio_bytes, file_name="PTE_FR.mp3")
+                    st.download_button("📥 下载 MP3", data=audio_bytes, file_name="PTE_FR_MS.mp3")
 
 # --- 5. 右下角悬浮个人信息 ---
 avatar_b64 = get_base64_of_bin_file('avatar.png')

@@ -25,6 +25,7 @@ def generate_audio(text, lang, slow):
         tts = gTTS(text=text, lang=lang, slow=slow)
         fp = io.BytesIO()
         tts.write_to_fp(fp)
+        fp.seek(0) # <--- 重点：重置文件指针到开头
         return fp
     except Exception as e:
         st.error(f"生成失败: {e}")

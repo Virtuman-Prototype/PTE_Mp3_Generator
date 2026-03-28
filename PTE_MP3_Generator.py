@@ -48,17 +48,38 @@ col1, col2 = st.columns(2)
 
 with col1:
     if st.button("生成英文 (EN)", use_container_width=True):
-        audio_data = generate_audio(text_input, 'en', slow_mode)
-        if audio_data:
-            st.audio(audio_data.getvalue(), format="audio/mp3")
-            st.download_button("下载英文 MP3", data=audio_data.getvalue(), file_name="english.mp3", mime="audio/mp3")
+        audio_fp = generate_audio(text_input, 'en', slow_mode)
+        if audio_fp:
+            # 关键步骤：转换成 Base64 字符串
+            audio_bytes = audio_fp.getvalue()
+            b64_audio = base64.b64encode(audio_bytes).decode()
+            
+            # 使用 HTML5 原生播放器，兼容性极强
+            audio_html = f"""
+                <audio controls autoplay style="width: 100%;">
+                    <source src="data:audio/mp3;base64,{b64_audio}" type="audio/mp3">
+                    Your browser does not support the audio element.
+                </audio>
+            """
+            st.markdown(audio_html, unsafe_allow_html=True)
+            
+            # 依然保留下载按钮
+            st.download_button("📥 下载英文 MP3", data=audio_bytes, file_name="english.mp3", mime="audio/mp3")
 
 with col2:
     if st.button("生成法语 (FR)", use_container_width=True):
-        audio_data = generate_audio(text_input, 'fr', slow_mode)
-        if audio_data:
-            st.audio(audio_data.getvalue(), format="audio/mp3")
-            st.download_button("下载法语 MP3", data=audio_data.getvalue(), file_name="french.mp3", mime="audio/mp3")
+        audio_fp = generate_audio(text_input, 'fr', slow_mode)
+        if audio_fp:
+            audio_bytes = audio_fp.getvalue()
+            b64_audio = base64.b64encode(audio_bytes).decode()
+            
+            audio_html = f"""
+                <audio controls autoplay style="width: 100%;">
+                    <source src="data:audio/mp3;base64,{b64_audio}" type="audio/mp3">
+                </audio>
+            """
+            st.markdown(audio_html, unsafe_allow_html=True)
+            st.download_button("📥 下载法语 MP3", data=audio_bytes, file_name="french.mp3", mime="audio/mp3")
 
 # --- 4. 右下角悬浮个人信息 ---
 

@@ -35,69 +35,52 @@ async def generate_microsoft_audio(text, voice, rate):
 # --- 2. 页面基础配置 ---
 st.set_page_config(page_title="PTE Pro Generator", page_icon="🎙️")
 
-# 注入 CSS：专门适配深色背景的黑底银白风格
 st.markdown("""
     <style>
-    /* 1. 彻底封杀红色滑块轨道 -> 换成银灰色 */
-    [data-testid="stSlider"] [data-baseweb="slider"] div div {
-        background-image: none !important;
-        background-color: #444444 !important; /* 轨道未选中部分：深灰 */
-    }
-    
-    /* 滑块左侧（已选中部分）的颜色 -> 亮银色 */
-    [data-testid="stSlider"] div[role="none"] > div > div:first-child > div {
-        background: #C0C0C0 !important; 
-    }
+    /* 1. 核心去红变量（保持之前的银色） */
+    :root { --primary-color: #C0C0C0 !important; }
 
-    /* 滑块圆点 -> 纯白配合黑色边框 */
-    [data-testid="stSlider"] div[role="slider"] {
-        background-color: #FFFFFF !important; 
-        border: 2px solid #C0C0C0 !important;
-        box-shadow: 0 0 8px rgba(255,255,255,0.2) !important;
-    }
-
-    /* 2. 把所有标签文字（“极慢”、“标准”）改为亮银白色，确保黑底看得清 */
-    [data-testid="stSliderTickBar"] div,
-    [data-testid="stWidgetLabel"] p,
-    [data-testid="stSliderWidget"] label p,
-    [data-testid="stMarkdownContainer"] p,
-    span[data-baseweb="tag"] {
-        color: #E0E0E0 !important; 
-        font-weight: 500 !important;
-    }
-    
-    /* 彻底隐藏那个顽固的红色刻度点 */
-    [data-testid="stTickBar"] {
-        display: none !important;
-    }
-
-    /* 3. 输入框：深色背景，银色边框 */
+    /* 2. 【关键】调大输入框的字体 (PTE 文本区) */
     .stTextArea textarea { 
-        font-size: 16px !important; 
-        border-radius: 8px !important; 
-        background-color: #1E1E1E !important;
+        font-size: 20px !important;  /* 原来是16px，现在调大到20px */
+        line-height: 1.6 !important; /* 增加行间距，方便阅读 */
         color: #FFFFFF !important;
-        border: 1px solid #444 !important;
+        background-color: #1E1E1E !important;
+        border-radius: 10px !important;
     }
 
-    /* 4. 按钮：纯黑背景，银色文字 */
-    .stButton button { 
-        height: 3.2em; 
-        border-radius: 8px; 
-        background-color: #000000 !important; 
+    /* 3. 【关键】调大所有标签文字 (比如“请输入练习文本”) */
+    [data-testid="stWidgetLabel"] p {
+        font-size: 18px !important; /* 标题字号 */
         color: #E0E0E0 !important;
+        font-weight: bold !important;
+    }
+
+    /* 4. 【关键】调大滑块下方的文字 (比如“标准速度”) */
+    [data-testid="stSliderTickBar"] div,
+    div[data-baseweb="slider"] div {
+        font-size: 16px !important; /* 滑块刻度字号 */
+        color: #C0C0C0 !important;
+    }
+
+    /* 5. 调大按钮文字 */
+    .stButton button { 
+        font-size: 18px !important; 
+        height: 3.5em !important;
+        background-color: #000000 !important; 
+        color: #FFFFFF !important;
         border: 1px solid #555 !important;
     }
-    .stButton button:hover {
-        border-color: #FFFFFF !important;
-        color: #FFFFFF !important;
-        background-color: #111111 !important;
-    }
+
+    /* 6. 滑块轨道和点 (维持之前的去红方案) */
+    [data-testid="stSlider"] div[role="none"] div div div { background: #C0C0C0 !important; }
+    [data-testid="stSlider"] div[role="slider"] { background-color: #FFFFFF !important; border: 2px solid #C0C0C0 !important; }
+    [data-testid="stTickBar"] { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
 st.title("🎙️ PTE Pro MP3 Generator")
-st.caption("基于微软 Azure Neural TTS 技术 | 高保真真人语调")
+st.caption("Test in COUV Edu.")
 
 # --- 3. 用户输入区域 ---
 text_input = st.text_area(

@@ -8,6 +8,12 @@ import os
 
 # --- 1. 核心功能函数 ---
 
+# 英文：换成更有“机器感”的标准女声，支持滑块变倍速
+EN_VOICE = "en-US-MichelleNeural"  
+
+# 法文：优雅自然的法音
+FR_VOICE = "fr-FR-VivienneNeural"
+
 def get_base64_of_bin_file(bin_file):
     """读取头像文件"""
     if os.path.exists(bin_file):
@@ -17,20 +23,19 @@ def get_base64_of_bin_file(bin_file):
         except: return None
     return None
 
-def generate_google_audio(text, lang='en', rate="+0%"):
-    """使用 gTTS 生成英语语音，并将滑块语速映射到 Google 的快/慢两档"""
-    if not text.strip(): return None
+async def generate_microsoft_audio(text, voice, rate):
+    """通用微软合成函数：支持精准语速调节"""
+    if not text.strip():
+        return None
     try:
-        # gTTS 只支持 slow=True (极慢) 或 slow=False (正常)
-        # 我们设定：当滑块在“极慢”或“略慢”时，触发 Google 的慢速模式
-        is_slow = True if "-" in rate else False
-        
-        tts = gTTS(text=text, lang=lang, slow=is_slow) 
-        fp = io.BytesIO()
-        tts.write_to_fp(fp)
-        return fp
+        communicate = edge_tts.Communicate(text, voice, rate=rate)
+        audio_data = b""
+        async for chunk in communicate.stream():
+            if chunk["type"] == "audio":
+                audio_data += chunk["data"]
+        return io.BytesIO(audio_data)
     except Exception as e:
-        st.error(f"Google 语音合成失败: {e}")
+        st.error(f"语音合成失败: {e}")
         return None
 
 async def generate_microsoft_audio(text, voice, rate="+0%"):
@@ -126,9 +131,9 @@ col1, col2 = st.columns(2)
 with col1:
     if st.button("生成英文 (EN)", use_container_width=True):
         if text_input:
-            with st.spinner('Google 引擎合成中...'):
-                # 传入 text_input, 'en', 和当前的滑块速度
-                audio_fp = generate_google_audio(text_input, 'en', current_speed)
+            with st.spinner('正在合成机器音...'):
+                # 统一调用，此时 current_speed (+15%等) 将完美生效
+                audio_fp = asyncio.run(generate_microsoft_audio(text_input, EN_VOICE, current_speed))
                 
                 if audio_fp:
                     audio_bytes = audio_fp.getvalue()
@@ -139,8 +144,7 @@ with col1:
 with col2:
     if st.button("生成法语 (FR)", use_container_width=True):
         if text_input:
-            with st.spinner('微软合成中...'):
-                FR_VOICE = "fr-FR-VivienneNeural"
+            with st.spinner('正在合成法语...'):
                 audio_fp = asyncio.run(generate_microsoft_audio(text_input, FR_VOICE, current_speed))
                 if audio_fp:
                     audio_bytes = audio_fp.getvalue()

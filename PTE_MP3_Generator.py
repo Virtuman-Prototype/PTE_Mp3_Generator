@@ -103,7 +103,7 @@ else:
     <div class="footer">
         <div class="info-text">
             <p class="name">👤 Serena S YANG</p>
-            <p class="school">Shuoyang5@Carleton</p>
+            <p class="school">Rocco.yang@gmail.com</p>
         </div>
     </div>
     """

@@ -37,44 +37,67 @@ st.set_page_config(page_title="PTE Pro Generator", page_icon="🎙️")
 
 st.markdown("""
     <style>
-    /* 1. 核心去红变量（保持之前的银色） */
-    :root { --primary-color: #C0C0C0 !important; }
+    /* 1. 彻底抹除所有可能的红色 (核心变量) */
+    :root { 
+        --primary-color: #C0C0C0 !important; 
+    }
 
-    /* 2. 【关键】调大输入框的字体 (PTE 文本区) */
+    /* 2. 【核心修复】针对 select_slider 的顽固红线 */
+    /* 抹除轨道背景图（红色来源）并强制改为银色 */
+    [data-testid="stSlider"] [data-baseweb="slider"] div {
+        background-image: none !important;
+        background-color: transparent !important;
+    }
+    
+    /* 强制设置轨道未选中的底色为深灰 */
+    [data-testid="stSlider"] [role="none"] {
+        background-color: #444444 !important;
+        height: 6px !important;
+        border-radius: 3px !important;
+    }
+
+    /* 强制设置已选中部分的颜色为银灰色 */
+    [data-testid="stSlider"] div[role="none"] > div > div:first-child > div {
+        background-color: #C0C0C0 !important;
+        background-image: none !important;
+    }
+
+    /* 3. 滑块圆点：白底银边，稍微放大点好操作 */
+    [data-testid="stSlider"] div[role="slider"] {
+        background-color: #FFFFFF !important;
+        border: 2px solid #C0C0C0 !important;
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    /* 4. 字号调整：加大加白，确保黑底清晰 */
+    /* 输入框文本 */
     .stTextArea textarea { 
-        font-size: 20px !important;  /* 原来是16px，现在调大到20px */
-        line-height: 1.6 !important; /* 增加行间距，方便阅读 */
+        font-size: 22px !important; 
+        line-height: 1.6 !important; 
         color: #FFFFFF !important;
         background-color: #1E1E1E !important;
-        border-radius: 10px !important;
     }
-
-    /* 3. 【关键】调大所有标签文字 (比如“请输入练习文本”) */
+    /* 标题标签 */
     [data-testid="stWidgetLabel"] p {
-        font-size: 18px !important; /* 标题字号 */
+        font-size: 20px !important;
         color: #E0E0E0 !important;
-        font-weight: bold !important;
     }
-
-    /* 4. 【关键】调大滑块下方的文字 (比如“标准速度”) */
-    [data-testid="stSliderTickBar"] div,
-    div[data-baseweb="slider"] div {
-        font-size: 16px !important; /* 滑块刻度字号 */
+    /* 滑块刻度文字 (标准速度等) */
+    [data-testid="stSliderTickBar"] div {
+        font-size: 16px !important;
         color: #C0C0C0 !important;
     }
 
-    /* 5. 调大按钮文字 */
+    /* 5. 按钮美化：黑底银边 */
     .stButton button { 
-        font-size: 18px !important; 
-        height: 3.5em !important;
+        font-size: 18px !important;
         background-color: #000000 !important; 
         color: #FFFFFF !important;
         border: 1px solid #555 !important;
     }
-
-    /* 6. 滑块轨道和点 (维持之前的去红方案) */
-    [data-testid="stSlider"] div[role="none"] div div div { background: #C0C0C0 !important; }
-    [data-testid="stSlider"] div[role="slider"] { background-color: #FFFFFF !important; border: 2px solid #C0C0C0 !important; }
+    
+    /* 6. 彻底干掉红色小点 */
     [data-testid="stTickBar"] { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
@@ -97,7 +120,7 @@ speed_options = {
     "略快 (+15%)": "+15%",
     "极快 (+30%)": "+30%"
 }
-speed_label = st.select_slider("调节语速 (PTE 练习建议选择标准或略快)", options=list(speed_options.keys()), value="标准速度")
+speed_label = st.select_slider("调节语速 (PTE 练习建议选择标准或略慢)", options=list(speed_options.keys()), value="标准速度")
 current_speed = speed_options[speed_label]
 
 # --- 4. 生成与播放区域 ---

@@ -32,7 +32,7 @@ async def generate_microsoft_audio(text, voice, rate):
         return None
 
 # --- 2. 页面基础配置 ---
-st.set_page_config(page_title="PTE Pro Generator", page_icon="🎙️")
+st.set_page_config(page_title="PTE/TCF MP3 Generator", page_icon="🎙️")
 
 # --- 3. 获取头像 Base64 ---
 avatar_b64 = get_base64_of_bin_file('avatar.png')
@@ -191,13 +191,13 @@ st.markdown(footer_html, unsafe_allow_html=True)
 # 为了给左上角腾出空间，标题增加一点间距
 st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
 st.title("🎙️ PTE Pro MP3 Generator")
-st.caption("Test in COUV Edu.")
+st.write("输入文本，一键生成英文或法文音频。")
 
 # --- 7. 用户输入区域 ---
 text_input = st.text_area(
-    "请输入练习文本：", 
-    placeholder="在此粘贴 PTE 阅读或口语文本...", 
-    height=250
+    "请输入你想要转换的文本：", 
+    placeholder="在此粘贴阅读或口语文本...", 
+    height=380
 )
 
 # 语速调节逻辑：将滑块选项转换为 edge-tts 识别的百分比字符串
@@ -208,7 +208,7 @@ speed_options = {
     "略快 (+15%)": "+15%",
     "极快 (+30%)": "+30%"
 }
-speed_label = st.select_slider("调节语速 (PTE 练习建议选择标准或略快)", options=list(speed_options.keys()), value="标准速度")
+speed_label = st.select_slider("调节语速 (PTE 练习建议选择标准或略慢)", options=list(speed_options.keys()), value="标准速度")
 current_speed = speed_options[speed_label]
 
 # --- 8. 生成与播放区域 ---

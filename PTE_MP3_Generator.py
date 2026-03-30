@@ -215,7 +215,7 @@ current_speed = speed_options[speed_label]
 col1, col2 = st.columns(2)
 
 # 配置微软声音 (推荐用这两个，滑块精准)
-EN_VOICE = "en-US-EmmaNeural"   # 机器感标准女声
+EN_VOICE = "en-US-JennyNeural"   # 机器感标准女声
 FR_VOICE = "fr-FR-VivienneNeural" # 优雅的法国女声
 
 with col1:

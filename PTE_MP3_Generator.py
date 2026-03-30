@@ -32,7 +32,7 @@ async def generate_microsoft_audio(text, voice, rate):
         return None
 
 # --- 2. 页面基础配置 ---
-st.set_page_config(page_title="PTE/TCF MP3 Generator", page_icon="🎙️")
+st.set_page_config(page_title="c", page_icon="🎙️")
 
 # --- 3. 获取头像 Base64 ---
 avatar_b64 = get_base64_of_bin_file('avatar.png')
@@ -190,7 +190,7 @@ st.markdown(footer_html, unsafe_allow_html=True)
 # --- 6. 页面标题 ---
 # 为了给左上角腾出空间，标题增加一点间距
 st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
-st.title("🎙️ PTE Pro MP3 Generator")
+st.title("🎙️ PTE and TCF MP3 Generator")
 st.write("输入文本，一键生成英文或法文音频。")
 
 # --- 7. 用户输入区域 ---

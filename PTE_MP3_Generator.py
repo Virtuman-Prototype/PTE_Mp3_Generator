@@ -32,7 +32,7 @@ async def generate_microsoft_audio(text, voice, rate):
         return None
 
 # --- 2. 页面基础配置 ---
-st.set_page_config(page_title="c", page_icon="🎙️")
+st.set_page_config(page_title="PTE/TCF MP3 Generator", page_icon="🎙️")
 
 # --- 3. 获取头像 Base64 ---
 avatar_b64 = get_base64_of_bin_file('avatar.png')

@@ -244,7 +244,3 @@ with col2:
         else:
             st.warning("请先输入文本")
 
-
-                        </div>
-                    """, unsafe_allow_html=True)
-                    st.download_button("📥 下载 MP3", audio_fp.getvalue(), "PTE_FR.mp3", "audio/mp3")

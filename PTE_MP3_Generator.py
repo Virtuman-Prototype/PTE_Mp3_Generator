@@ -244,7 +244,7 @@ with col2:
         else:
             st.warning("请先输入文本")
 
-                            <audio controls autoplay style="width: 100%;"><source src="data:audio/mp3;base64,{b64}" type="audio/mp3"></audio>
+
                         </div>
                     """, unsafe_allow_html=True)
                     st.download_button("📥 下载 MP3", audio_fp.getvalue(), "PTE_FR.mp3", "audio/mp3")

@@ -194,7 +194,7 @@ st.markdown(footer_html, unsafe_allow_html=True)
 # 为了给左上角腾出空间，标题增加一点间距
 st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
 st.title("🎙️ PTE and TCF MP3 Generator")
-st.write("输入文本，一键生成英文或法文音频。")
+st.write("输入文本，一键生成英文或法文音频。Log：2026/10/12 11:50 更换语音库")
 
 # --- 7. 用户输入区域 ---
 text_input = st.text_area(

@@ -1,6 +1,6 @@
 import streamlit as st
 import asyncio
-import edge_tts
+from gtts import gTTS
 import io
 import base64
 import os
@@ -16,17 +16,20 @@ def get_base64_of_bin_file(bin_file):
         except: return None
     return None
 
-async def generate_microsoft_audio(text, voice, rate):
-    """调用微软 Edge TTS 引擎生成异步语音流"""
+def generate_audio(text, voice, rate):
+    """20261012停止调用微软，改为调用 gTTS 引擎生成语音流（支持英法双语）"""
     if not text.strip():
         return None
     try:
-        communicate = edge_tts.Communicate(text, voice, rate=rate)
-        audio_data = b""
-        async for chunk in communicate.stream():
-            if chunk["type"] == "audio":
-                audio_data += chunk["data"]
-        return io.BytesIO(audio_data)
+        # 根据选择的音色或语言自动判断：包含 fr 为法语，否则为英文
+        lang = 'fr' if 'fr' in voice.lower() else 'en'
+        
+        # gTTS 转换
+        tts = gTTS(text=text, lang=lang)
+        audio_fp = io.BytesIO()
+        tts.write_to_fp(audio_fp)
+        audio_fp.seek(0)
+        return audio_fp
     except Exception as e:
         st.error(f"语音合成失败: {e}")
         return None
@@ -214,20 +217,21 @@ current_speed = speed_options[speed_label]
 # --- 8. 生成与播放区域 ---
 col1, col2 = st.columns(2)
 
-# 配置微软声音 (推荐用这两个，滑块精准)
-EN_VOICE = "en-GB-SoniaNeural"   # 英文英音（女声）
-FR_VOICE = "fr-FR-HenriNeural" # 法语（男声）
+# gTTS 语言设置
+EN_LANG = "en"   # 英文
+FR_LANG = "fr"   # 法语
 
 with col1:
     if st.button("生成英文 (EN)", use_container_width=True):
         if text_input:
             with st.spinner('正在合成机器音...'):
-                audio_fp = asyncio.run(generate_microsoft_audio(text_input, EN_VOICE, current_speed))
+                # 传入文本和对应语言，去掉多余的 voice 和 speed 参数
+                audio_fp = generate_audio(text_input, EN_LANG, current_speed)
                 if audio_fp:
                     audio_bytes = audio_fp.getvalue()
                     b64 = base64.b64encode(audio_bytes).decode()
                     st.markdown(f'<audio controls style="width: 100%; margin-top:10px;"><source src="data:audio/mp3;base64,{b64}" type="audio/mp3"></audio>', unsafe_allow_html=True)
-                    st.download_button("📥 下载 MP3", data=audio_bytes, file_name="PTE_EN.mp3", mime="audio/mp3")
+                    st.download_button("📥 下载 MP3", data=audio_bytes, file_name="PTE_EN.mp3", mime="audio/mp3", key="dl_en")
         else:
             st.warning("请先输入文本")
 
@@ -235,12 +239,12 @@ with col2:
     if st.button("生成法语 (FR)", use_container_width=True):
         if text_input:
             with st.spinner('正在合成法语...'):
-                audio_fp = asyncio.run(generate_microsoft_audio(text_input, FR_VOICE, current_speed))
+                audio_fp = generate_audio(text_input, FR_LANG, current_speed)
                 if audio_fp:
                     audio_bytes = audio_fp.getvalue()
                     b64 = base64.b64encode(audio_bytes).decode()
                     st.markdown(f'<audio controls style="width: 100%; margin-top:10px;"><source src="data:audio/mp3;base64,{b64}" type="audio/mp3"></audio>', unsafe_allow_html=True)
-                    st.download_button("📥 下载 MP3", data=audio_bytes, file_name="PTE_FR.mp3", mime="audio/mp3")
+                    st.download_button("📥 下载 MP3", data=audio_bytes, file_name="PTE_FR.mp3", mime="audio/mp3", key="dl_fr")
         else:
             st.warning("请先输入文本")
 

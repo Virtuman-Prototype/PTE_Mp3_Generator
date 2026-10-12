@@ -215,8 +215,8 @@ current_speed = speed_options[speed_label]
 col1, col2 = st.columns(2)
 
 # 配置微软声音 (推荐用这两个，滑块精准)
-EN_VOICE = "en-US-JennyNeural"   # 机器感标准女声
-FR_VOICE = "fr-FR-VivienneNeural" # 优雅的法国女声
+EN_VOICE = "en-GB-SoniaNeural"   # 英文英音（女声）
+FR_VOICE = "fr-FR-HenriNeural" # 法语（男声）
 
 with col1:
     if st.button("生成英文 (EN)", use_container_width=True):
